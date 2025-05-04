@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"runtime"
@@ -20,8 +19,6 @@ func init() {
 }
 
 func main(){
-	var number int
-	fmt.Scan(&number)
 	if err := glfw.Init(); err != nil {
 		log.Fatalln("GLFW init error. \nErr: ", err)
 	}
@@ -56,15 +53,27 @@ func main(){
 	gl.GenVertexArrays(1, &vao)
 	gl.BindVertexArray(vao)
 
-	linesQuan := digits.CreateVertexDigits(number)
+	var vbo uint32
+	gl.GenBuffers(1, &vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	
+	vertices1, linesQuan1 := digits.CreateVertexDigits(1, 0)
+	vertices2, linesQuan2 := digits.CreateVertexDigits(2, 0.3)
+	allVertices := append(vertices1, vertices2...)
+
+	gl.BufferData(gl.ARRAY_BUFFER, len(allVertices)*4, gl.Ptr(allVertices), gl.STATIC_DRAW)
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
+	gl.EnableVertexAttribArray(0)
 
 	gl.LineWidth(3.0)
 	glfw.SwapInterval(1)
 	gl.UseProgram(program)
 	gl.ClearColor(0.0, 0.0, 0.0, 0.5)
 	for !window.ShouldClose(){
+		
 		gl.Clear(gl.COLOR_BUFFER_BIT)
-		gl.DrawArrays(gl.LINE_STRIP, 0, linesQuan)
+		gl.DrawArrays(gl.LINE_STRIP, 0, linesQuan1)
+		gl.DrawArrays(gl.LINE_STRIP, linesQuan1, linesQuan2)
 
 		if err := gl.GetError(); err != gl.NO_ERROR {
 			log.Fatalln("OpenGL error. \nErr: ", err)
