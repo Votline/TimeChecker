@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"runtime"
@@ -8,6 +9,7 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 
 	"TimeCheck/shaders"
+	"TimeCheck/digits"
 )
 
 const windowWidth = 250
@@ -18,6 +20,8 @@ func init() {
 }
 
 func main(){
+	var number int
+	fmt.Scan(&number)
 	if err := glfw.Init(); err != nil {
 		log.Fatalln("GLFW init error. \nErr: ", err)
 	}
@@ -29,7 +33,7 @@ func main(){
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 	glfw.WindowHint(glfw.TransparentFramebuffer, glfw.True)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
-	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCompatProfile)
 	window, err := glfw.CreateWindow(windowWidth, windowHeight, "TimeCheck", nil, nil)
 	if err != nil {
 		log.Fatalln("Create window error. \nErr: ", err)
@@ -48,11 +52,20 @@ func main(){
 	shaders.CompileAndAttachShaders(program)
 	gl.LinkProgram(program)
 
+	var vao uint32
+	gl.GenVertexArrays(1, &vao)
+	gl.BindVertexArray(vao)
+
+	linesQuan := digits.CreateVertexDigits(number)
+
+	gl.LineWidth(3.0)
 	glfw.SwapInterval(1)
+	gl.UseProgram(program)
 	gl.ClearColor(0.0, 0.0, 0.0, 0.5)
 	for !window.ShouldClose(){
 		gl.Clear(gl.COLOR_BUFFER_BIT)
-		
+		gl.DrawArrays(gl.LINE_STRIP, 0, linesQuan)
+
 		if err := gl.GetError(); err != gl.NO_ERROR {
 			log.Fatalln("OpenGL error. \nErr: ", err)
 		}
