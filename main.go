@@ -45,6 +45,8 @@ func main(){
 	if err := gl.Init(); err != nil {
 		log.Fatalln("OpenGL init error. \nErr: ", err)
 	}
+	gl.Enable(gl.BLEND)
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 	program := gl.CreateProgram()
 	shaders.CompileAndAttachShaders(program)
 	gl.LinkProgram(program)
@@ -57,9 +59,13 @@ func main(){
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 	
-	vertices1, linesQuan1 := digits.CreateVertexDigits(1, 0)
-	vertices2, linesQuan2 := digits.CreateVertexDigits(2, 0.3)
+	vertices1, linesQuan1 := digits.CreateVertexDigits(0, 0)
+	vertices2, linesQuan2 := digits.CreateVertexDigits(6, 0.25)
+	vertices3, linesQuan3 := digits.CreateVertexDigits(7, 0.4)
+	vertices4, linesQuan4 := digits.CreateVertexDigits(9, 0.6)
 	allVertices := append(vertices1, vertices2...)
+	allVertices = append(allVertices, vertices3...)
+	allVertices = append(allVertices, vertices4...)
 
 	gl.BufferData(gl.ARRAY_BUFFER, len(allVertices)*4, gl.Ptr(allVertices), gl.STATIC_DRAW)
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
@@ -68,12 +74,14 @@ func main(){
 	gl.LineWidth(3.0)
 	glfw.SwapInterval(1)
 	gl.UseProgram(program)
-	gl.ClearColor(0.0, 0.0, 0.0, 0.5)
+	gl.ClearColor(0.0, 0.0, 0.0, 0.9)
 	for !window.ShouldClose(){
 		
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 		gl.DrawArrays(gl.LINE_STRIP, 0, linesQuan1)
 		gl.DrawArrays(gl.LINE_STRIP, linesQuan1, linesQuan2)
+		gl.DrawArrays(gl.LINE_STRIP, linesQuan1+linesQuan2, linesQuan3)
+		gl.DrawArrays(gl.LINE_STRIP, linesQuan1+linesQuan2+linesQuan3, linesQuan4)
 
 		if err := gl.GetError(); err != gl.NO_ERROR {
 			log.Fatalln("OpenGL error. \nErr: ", err)
