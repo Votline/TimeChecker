@@ -6,6 +6,8 @@ import (
 	"runtime"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/go-gl/gl/v4.1-core/gl"
+
+	"TimeCheck/shaders"
 )
 
 const windowWidth = 250
@@ -43,6 +45,7 @@ func main(){
 		log.Fatalln("OpenGL init error. \nErr: ", err)
 	}
 	program := gl.CreateProgram()
+	shaders.CompileAndAttachShaders(program)
 	gl.LinkProgram(program)
 
 	glfw.SwapInterval(1)
