@@ -25,7 +25,7 @@ The application displays current time in a separate window.
 3. Build:
    - `go build`
 4. Run:
-   - `./TimeChecker`
+   - `./main`
 
 ## License
 This project is licensed under [GNU AGPL v3](LICENSE).
