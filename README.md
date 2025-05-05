@@ -9,6 +9,8 @@ The application displays current time in a separate window.
 ### Key Features:
 - **Time display**: Current time in HH:MM:SS format
 - **Lightweight**: Minimal resource consumption
+- **TimerMode**: Simple timer, controlled by one button
+- **On Top**: Over all windows mode
 
 ## Technologies
 - **Go** (1.24.1) - primary language
