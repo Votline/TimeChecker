@@ -9,6 +9,7 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 
 	"TimeCheck/shaders"
+	"TimeCheck/letters"
 	"TimeCheck/digits"
 )
 
@@ -69,36 +70,17 @@ func main(){
 	gl.ClearColor(0.0, 0.0, 0.0, 0.9)
 	for !window.ShouldClose(){
 		
-		var allVertices []float32
-		var vertexQuan []int32
-		offset := float32(0.09)
-		timeString := time.Now().Format("15:04:05")
-		for _, ch := range timeString {
-		if ch >= '0' && ch <= '9' {
-				num := int(ch - '0')
-				vertices1, vertexQuan1 := digits.CreateVertexDigits(num, offset)
-				allVertices = append(allVertices, vertices1...)
-				vertexQuan = append(vertexQuan, vertexQuan1)
-				offset += 0.2
-			} else if ch == ':' {
-				vertices1, vertexQuan1 := digits.CreateVertexDigits(10, offset)
-				vertices2, vertexQuan2 := digits.CreateVertexDigits(11, offset)
-				allVertices = append(allVertices, vertices1...)
-				vertexQuan = append(vertexQuan, vertexQuan1)
-				allVertices = append(allVertices, vertices2...)
-				vertexQuan = append(vertexQuan, vertexQuan2)
-				offset += 0.1
-			}
-
-		}
+		allVertices, verticesQuan := createArraysForDraw()
 		gl.BufferData(gl.ARRAY_BUFFER, len(allVertices)*4, gl.Ptr(allVertices), gl.STATIC_DRAW)
 
 		gl.Clear(gl.COLOR_BUFFER_BIT)
+
 		start := int32(0)
-		for _, vertexes := range vertexQuan {
-			gl.DrawArrays(gl.LINE_STRIP, start, vertexes)
-			start += vertexes
+		for _, vertices := range verticesQuan {
+			gl.DrawArrays(gl.LINE_STRIP, start, vertices)
+			start += vertices
 		}
+		
 		if err := gl.GetError(); err != gl.NO_ERROR {
 			log.Fatalln("OpenGL error. \nErr: ", err)
 		}
@@ -106,4 +88,38 @@ func main(){
 		window.SwapBuffers()
 		glfw.PollEvents()
 	}
+}
+
+func createArraysForDraw() ([]float32, []int32){
+	var allVertices []float32
+	var verticesQuan []int32
+	offsetD := float32(0.09)
+	offsetL := float32(0.0)
+	s := time.Now().Format("15:04:05") + "TIMER ONTOP"
+
+	for _, ch := range s {
+		if ch >= '0' && ch <= '9' {
+			num := int(ch - '0')
+			vertices1, verticesQuan1 := digits.CreateVertexDigits(num, offsetD)
+			allVertices = append(allVertices, vertices1...)
+			verticesQuan = append(verticesQuan, verticesQuan1)
+			offsetD += 0.2	
+		} else if ch == ':'{
+			vertices1, verticesQuan1 := digits.CreateVertexDigits(10, offsetD)
+			vertices2, verticesQuan2 := digits.CreateVertexDigits(11, offsetD)
+			allVertices = append(allVertices, vertices1...)
+			verticesQuan = append(verticesQuan, verticesQuan1)
+			allVertices = append(allVertices, vertices2...)
+			verticesQuan = append(verticesQuan, verticesQuan2)
+			offsetD += 0.1
+		} else if ch >= 'A' && ch <= 'Z' {
+			vertices1, verticesQuan1, width := letters.CreateVertexLetters(ch, offsetL)
+			allVertices = append(allVertices, vertices1...)
+			verticesQuan = append(verticesQuan, verticesQuan1)
+			offsetL += width
+		} else if ch == ' ' {
+			offsetL += 0.2
+		}
+	}
+	return allVertices, verticesQuan
 }
