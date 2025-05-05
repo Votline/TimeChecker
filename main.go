@@ -39,8 +39,8 @@ func main(){
 	window.MakeContextCurrent()
 	
 	vidMode := glfw.GetPrimaryMonitor().GetVideoMode()
-	newPosX := int(float32(vidMode.Width) * (260.0 / float32(vidMode.Width)))
-	newPosY := int(float32(vidMode.Height) * (1070.0 / float32(vidMode.Height)))
+	newPosX := int(float32(vidMode.Width) * (220.0 / float32(vidMode.Width)))
+	newPosY := int(float32(vidMode.Height) * (1075.0 / float32(vidMode.Height)))
 	window.SetPos(vidMode.Width-newPosX, vidMode.Height-newPosY)
 
 	if err := gl.Init(); err != nil {
