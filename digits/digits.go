@@ -10,12 +10,12 @@ func CreateVertexDigits(number int, offset float32) ([]float32, int32) {
 		}, 3
 	case 2:
 		return []float32 {
-			-0.9 + offset, 0.2, 0.0,
-			-0.85 + offset, 0.3, 0.0,
 			-0.8 + offset, 0.2, 0.0,
+			-0.75 + offset, 0.3, 0.0,
+			-0.7 + offset, 0.2, 0.0,
 		
-			-0.9 + offset, -0.2, 0.0,
-			-0.78 + offset, -0.2, 0.0,
+			-0.8 + offset, -0.2, 0.0,
+			-0.68 + offset, -0.2, 0.0,
 		}, 5
 	case 3:
 		return []float32 {
@@ -37,7 +37,7 @@ func CreateVertexDigits(number int, offset float32) ([]float32, int32) {
 			-0.7 + offset, 0.1, 0.0,
 			-0.7 + offset, 0.3, 0.0,
 
-			-0.7 + offset, -0.2, 0.0,	
+			-0.7 + offset, -0.25, 0.0,	
 		}, 5
 	case 5:
 		return []float32 {
@@ -101,6 +101,16 @@ func CreateVertexDigits(number int, offset float32) ([]float32, int32) {
 
 			-0.8 + offset, 0.3, 0.0,
 		}, 5
+	case 10:
+		return []float32 {
+			-0.8 + offset, 0.3, 0.0,
+			-0.8 + offset, 0.25, 0.0,
+		}, 2
+	case 11:
+		return []float32 {
+			-0.8 + offset, -0.2, 0.0,
+			-0.8 + offset, -0.25, 0.0,
+		}, 2
 	default:
 		return []float32 {
 			0.0, 0.0, 0.0,

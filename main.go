@@ -2,8 +2,9 @@ package main
 
 import (
 	"log"
-
+	"time"
 	"runtime"
+
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/go-gl/gl/v4.1-core/gl"
 
@@ -11,8 +12,8 @@ import (
 	"TimeCheck/digits"
 )
 
-const windowWidth = 250
-const windowHeight = 100
+const windowWidth = 210
+const windowHeight = 90
 
 func init() {
 	runtime.LockOSThread()
@@ -59,15 +60,6 @@ func main(){
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 	
-	vertices1, linesQuan1 := digits.CreateVertexDigits(0, 0)
-	vertices2, linesQuan2 := digits.CreateVertexDigits(6, 0.25)
-	vertices3, linesQuan3 := digits.CreateVertexDigits(7, 0.4)
-	vertices4, linesQuan4 := digits.CreateVertexDigits(9, 0.6)
-	allVertices := append(vertices1, vertices2...)
-	allVertices = append(allVertices, vertices3...)
-	allVertices = append(allVertices, vertices4...)
-
-	gl.BufferData(gl.ARRAY_BUFFER, len(allVertices)*4, gl.Ptr(allVertices), gl.STATIC_DRAW)
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
 	gl.EnableVertexAttribArray(0)
 
@@ -77,12 +69,36 @@ func main(){
 	gl.ClearColor(0.0, 0.0, 0.0, 0.9)
 	for !window.ShouldClose(){
 		
-		gl.Clear(gl.COLOR_BUFFER_BIT)
-		gl.DrawArrays(gl.LINE_STRIP, 0, linesQuan1)
-		gl.DrawArrays(gl.LINE_STRIP, linesQuan1, linesQuan2)
-		gl.DrawArrays(gl.LINE_STRIP, linesQuan1+linesQuan2, linesQuan3)
-		gl.DrawArrays(gl.LINE_STRIP, linesQuan1+linesQuan2+linesQuan3, linesQuan4)
+		var allVertices []float32
+		var vertexQuan []int32
+		offset := float32(0.09)
+		timeString := time.Now().Format("15:04:05")
+		for _, ch := range timeString {
+		if ch >= '0' && ch <= '9' {
+				num := int(ch - '0')
+				vertices1, vertexQuan1 := digits.CreateVertexDigits(num, offset)
+				allVertices = append(allVertices, vertices1...)
+				vertexQuan = append(vertexQuan, vertexQuan1)
+				offset += 0.2
+			} else if ch == ':' {
+				vertices1, vertexQuan1 := digits.CreateVertexDigits(10, offset)
+				vertices2, vertexQuan2 := digits.CreateVertexDigits(11, offset)
+				allVertices = append(allVertices, vertices1...)
+				vertexQuan = append(vertexQuan, vertexQuan1)
+				allVertices = append(allVertices, vertices2...)
+				vertexQuan = append(vertexQuan, vertexQuan2)
+				offset += 0.1
+			}
 
+		}
+		gl.BufferData(gl.ARRAY_BUFFER, len(allVertices)*4, gl.Ptr(allVertices), gl.STATIC_DRAW)
+
+		gl.Clear(gl.COLOR_BUFFER_BIT)
+		start := int32(0)
+		for _, vertexes := range vertexQuan {
+			gl.DrawArrays(gl.LINE_STRIP, start, vertexes)
+			start += vertexes
+		}
 		if err := gl.GetError(); err != gl.NO_ERROR {
 			log.Fatalln("OpenGL error. \nErr: ", err)
 		}
