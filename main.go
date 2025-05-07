@@ -95,7 +95,7 @@ func main() {
 	gl.ClearColor(0.0, 0.0, 0.0, 0.9)
 	for !window.ShouldClose() {
 
-		allVertices, verticesQuan := utils.CreateTime(&sw)
+		allVertices, verticesQuan := utils.CreateTime(sw)
 		utils.CreateButtons(&allVertices, &verticesQuan)
 		gl.BufferData(gl.ARRAY_BUFFER, len(allVertices)*4, gl.Ptr(allVertices), gl.STATIC_DRAW)
 
