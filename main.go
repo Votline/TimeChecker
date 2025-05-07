@@ -8,6 +8,7 @@ import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/go-gl/gl/v4.1-core/gl"
 
+	"TimeCheck/primShapes"
 	"TimeCheck/shaders"
 	"TimeCheck/letters"
 	"TimeCheck/digits"
@@ -118,8 +119,20 @@ func createArraysForDraw() ([]float32, []int32){
 			verticesQuan = append(verticesQuan, verticesQuan1)
 			offsetL += width
 		} else if ch == ' ' {
-			offsetL += 0.2
+			offsetL += 0.15
 		}
 	}
+	timerButton := primShapes.CreateRect(
+		-0.85, -0.3, 
+		-0.2, -0.8,
+	)
+	ontopButton := primShapes.CreateRect(
+    -0.08, -0.3,
+    0.75, -0.8,
+  )
+	allVertices = append(allVertices, timerButton...)
+	allVertices = append(allVertices, ontopButton...)
+	verticesQuan = append(verticesQuan, 5)
+	verticesQuan = append(verticesQuan, 5)
 	return allVertices, verticesQuan
 }
