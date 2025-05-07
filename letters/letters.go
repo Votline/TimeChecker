@@ -2,6 +2,21 @@ package letters
 
 func CreateVertexLetters(letter rune, offset float32) ([]float32, int32, float32) {
 	switch letter {
+	case 'S':
+		return []float32{
+			-0.7 + offset, -0.4, 0.0,
+			-0.8 + offset, -0.5, 0.0,
+			-0.7 + offset, -0.6, 0.0,
+			-0.8 + offset, -0.7, 0.0,
+		}, 4, 0.15
+	case 'W':
+		return []float32{
+			-0.8 + offset, -0.4, 0.0,
+			-0.77 + offset, -0.7, 0.0,
+			-0.74 + offset, -0.4, 0.0,
+			-0.72 + offset, -0.7, 0.0,
+			-0.7 + offset, -0.4, 0.0,
+		}, 5, 0.15
 	case 'T':
 		return []float32{
 			-0.82 + offset, -0.4, 0.0,

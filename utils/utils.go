@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -76,8 +75,8 @@ func CreateTime(sw *StopWatch) ([]float32, []int32) {
 
 func CreateButtons(allVertices *[]float32, verticesQuan *[]int32) {
   Btns = []Btn{}
-  offsetL := float32(0.05)
-  s := "TIMER ONTOP"
+  offsetL := float32(-0.02)
+  s := "STOPW ONTOP"
 
   for _, ch := range s {
     if ch >= 'A' && ch <= 'Z' {
@@ -89,12 +88,12 @@ func CreateButtons(allVertices *[]float32, verticesQuan *[]int32) {
       offsetL += 0.15
     }
   }
-  timerButton := Btn{X1: -0.8, Y1: -0.3, X2: -0.15, Y2: -0.8, Text: "TIMER"}
+  timerButton := Btn{X1: -0.88, Y1: -0.3, X2: -0.08, Y2: -0.8, Text: "TIMER"}
   timerVertices := primShapes.CreateRect(
     timerButton.X1, timerButton.Y1,
     timerButton.X2, timerButton.Y2,
   )
-  ontopButton := Btn{X1: -0.05, Y1: -0.3, X2: 0.8, Y2: -0.8, Text: "ONTOP"}
+  ontopButton := Btn{X1: 0.03, Y1: -0.3, X2: 0.85, Y2: -0.8, Text: "ONTOP"}
   ontopVertices := primShapes.CreateRect(
     ontopButton.X1, ontopButton.Y1,
     ontopButton.X2, ontopButton.Y2,
@@ -118,18 +117,4 @@ func HoverOnBtns(w *glfw.Window, Btns []Btn) (hoverButton *Btn) {
     }
   }
   return nil
-}
-
-func BtnsCallback(w *glfw.Window, button glfw.MouseButton,
-  action glfw.Action, mod glfw.ModifierKey) {
-  if button == glfw.MouseButtonLeft && action == glfw.Press {
-    if currentBtn := HoverOnBtns(w, Btns); currentBtn != nil {
-      switch currentBtn.Text {
-      case "TIMER":
-        log.Println("TIMER")
-      case "ONTOP":
-        log.Println("ONTOP")
-      }
-    }
-  }
 }
