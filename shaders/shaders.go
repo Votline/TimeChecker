@@ -1,8 +1,8 @@
-package shaders 
+package shaders
 
 import (
-	"log"
 	"github.com/go-gl/gl/v4.1-core/gl"
+	"log"
 )
 
 const vertexShaderSource = `

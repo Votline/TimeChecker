@@ -5,13 +5,11 @@ import (
 	"time"
 	"runtime"
 
-	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/go-gl/glfw/v3.3/glfw"
 
-	"TimeCheck/primShapes"
+	"TimeCheck/utils"
 	"TimeCheck/shaders"
-	"TimeCheck/letters"
-	"TimeCheck/digits"
 )
 
 const windowWidth = 210
@@ -21,7 +19,9 @@ func init() {
 	runtime.LockOSThread()
 }
 
-func main(){
+
+func main() {
+	sw := utils.GetSW()
 	if err := glfw.Init(); err != nil {
 		log.Fatalln("GLFW init error. \nErr: ", err)
 	}
@@ -39,7 +39,31 @@ func main(){
 		log.Fatalln("Create window error. \nErr: ", err)
 	}
 	window.MakeContextCurrent()
-	
+	window.SetMouseButtonCallback(func(w *glfw.Window, button glfw.MouseButton,
+		action glfw.Action, mod glfw.ModifierKey) {
+		if button == glfw.MouseButtonLeft && action == glfw.Press {
+			if currentBtn := utils.HoverOnBtns(w, utils.Btns); currentBtn != nil {
+				switch currentBtn.Text {
+				case "TIMER":
+					if !sw.Mode {
+						sw.Mode = true
+						sw.Running = true
+						sw.StartTime = time.Now()
+						sw.SavedTime = 0
+					} else if sw.Mode && sw.Running {
+						sw.Running = false
+						sw.SavedTime += time.Since(sw.StartTime)
+					} else if sw.Mode {
+						sw.Mode = false
+					}
+				case "ONTOP":
+					currentState := window.GetAttrib(glfw.Floating)
+					window.SetAttrib(glfw.Floating, 1-currentState)
+				}
+			}
+		}
+	})
+
 	vidMode := glfw.GetPrimaryMonitor().GetVideoMode()
 	newPosX := int(float32(vidMode.Width) * (220.0 / float32(vidMode.Width)))
 	newPosY := int(float32(vidMode.Height) * (1075.0 / float32(vidMode.Height)))
@@ -61,7 +85,7 @@ func main(){
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-	
+
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
 	gl.EnableVertexAttribArray(0)
 
@@ -69,9 +93,10 @@ func main(){
 	glfw.SwapInterval(1)
 	gl.UseProgram(program)
 	gl.ClearColor(0.0, 0.0, 0.0, 0.9)
-	for !window.ShouldClose(){
-		
-		allVertices, verticesQuan := createArraysForDraw()
+	for !window.ShouldClose() {
+
+		allVertices, verticesQuan := utils.CreateTime(&sw)
+		utils.CreateButtons(&allVertices, &verticesQuan)
 		gl.BufferData(gl.ARRAY_BUFFER, len(allVertices)*4, gl.Ptr(allVertices), gl.STATIC_DRAW)
 
 		gl.Clear(gl.COLOR_BUFFER_BIT)
@@ -81,7 +106,7 @@ func main(){
 			gl.DrawArrays(gl.LINE_STRIP, start, vertices)
 			start += vertices
 		}
-		
+
 		if err := gl.GetError(); err != gl.NO_ERROR {
 			log.Fatalln("OpenGL error. \nErr: ", err)
 		}
@@ -89,50 +114,4 @@ func main(){
 		window.SwapBuffers()
 		glfw.PollEvents()
 	}
-}
-
-func createArraysForDraw() ([]float32, []int32){
-	var allVertices []float32
-	var verticesQuan []int32
-	offsetD := float32(0.09)
-	offsetL := float32(0.0)
-	s := time.Now().Format("15:04:05") + "TIMER ONTOP"
-
-	for _, ch := range s {
-		if ch >= '0' && ch <= '9' {
-			num := int(ch - '0')
-			vertices1, verticesQuan1 := digits.CreateVertexDigits(num, offsetD)
-			allVertices = append(allVertices, vertices1...)
-			verticesQuan = append(verticesQuan, verticesQuan1)
-			offsetD += 0.2	
-		} else if ch == ':'{
-			vertices1, verticesQuan1 := digits.CreateVertexDigits(10, offsetD)
-			vertices2, verticesQuan2 := digits.CreateVertexDigits(11, offsetD)
-			allVertices = append(allVertices, vertices1...)
-			verticesQuan = append(verticesQuan, verticesQuan1)
-			allVertices = append(allVertices, vertices2...)
-			verticesQuan = append(verticesQuan, verticesQuan2)
-			offsetD += 0.1
-		} else if ch >= 'A' && ch <= 'Z' {
-			vertices1, verticesQuan1, width := letters.CreateVertexLetters(ch, offsetL)
-			allVertices = append(allVertices, vertices1...)
-			verticesQuan = append(verticesQuan, verticesQuan1)
-			offsetL += width
-		} else if ch == ' ' {
-			offsetL += 0.15
-		}
-	}
-	timerButton := primShapes.CreateRect(
-		-0.85, -0.3, 
-		-0.2, -0.8,
-	)
-	ontopButton := primShapes.CreateRect(
-    -0.08, -0.3,
-    0.75, -0.8,
-  )
-	allVertices = append(allVertices, timerButton...)
-	allVertices = append(allVertices, ontopButton...)
-	verticesQuan = append(verticesQuan, 5)
-	verticesQuan = append(verticesQuan, 5)
-	return allVertices, verticesQuan
 }
