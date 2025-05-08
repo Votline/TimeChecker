@@ -65,9 +65,7 @@ func main() {
 	})
 
 	vidMode := glfw.GetPrimaryMonitor().GetVideoMode()
-	newPosX := int(float32(vidMode.Width) * (220.0 / float32(vidMode.Width)))
-	newPosY := int(float32(vidMode.Height) * (1075.0 / float32(vidMode.Height)))
-	window.SetPos(vidMode.Width-newPosX, vidMode.Height-newPosY)
+	window.SetPos(vidMode.Width-220, vidMode.Height-1075)
 
 	if err := gl.Init(); err != nil {
 		log.Fatalln("OpenGL init error. \nErr: ", err)
@@ -108,7 +106,7 @@ func main() {
 		}
 
 		if err := gl.GetError(); err != gl.NO_ERROR {
-			log.Fatalln("OpenGL error. \nErr: ", err)
+			log.Println("OpenGL error. \nErr: ", err)
 		}
 
 		window.SwapBuffers()
