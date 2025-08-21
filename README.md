@@ -13,19 +13,34 @@ The application displays current time in a separate window.
 - **On Top**: Over all windows mode
 
 ## Technologies
-- **Go** (1.24.1) - primary language
-- **OpenGL** - graphics API
-- **GLFW** (v3.3) - window creation and input handling
+- **Go** - Primary programming language
+- **[Go-gl](https://github.com/go-gl/gl)** - Graphics rendering
+- **[Go-gl/glfw](https://github.com/go-gl/glfw)** - Window management
 
-## Installation
-1. Clone the repository:
-   - `git clone https://github.com/Votline/TimeCheck`
-2. Install dependencies:
-   - `go mod download`
-3. Build:
-   - `go build`
-4. Run:
-   - `./main`
+## Installation & Building
 
-## License
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/Votline/TimeCheck
+    cd TimeCheck
+    ```
+
+2.  **Download dependencies**:
+    ```bash
+    go mod download
+    ```
+
+3.  **Build the application**:
+    ```bash
+    go build -o timecheck
+    ```
+
+4.  **Run**:
+    ```bash
+    ./timecheck
+    ```
+
+## Licenses
 This project is licensed under [GNU AGPL v3](LICENSE).
+
+The full license texts are available in the [licenses directory](licenses/)
