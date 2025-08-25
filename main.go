@@ -29,12 +29,13 @@ func main() {
 	win := ui.CreateWin()
 	pg, ofL := render.Setup()
 	sw := ui.CreateSW(pg, ofL)
+	win.SetMouseButtonCallback(ui.BtnCallback(sw))
 
 	glfw.SwapInterval(1)
 	for !win.ShouldClose() {
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 		
-		sw.Render()
+		sw.Render(win)
 
 		if err := gl.GetError(); err != gl.NO_ERROR {
 			log.Println("OpenGL error. \nErr: ", err)

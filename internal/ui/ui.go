@@ -2,7 +2,7 @@ package ui
 
 import (
 	"log"
-	//"time"
+	"time"
 
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
@@ -16,20 +16,22 @@ type element interface {
 	getVtq() int32
 	getVtc() []float32
 
-	setRune(rune)
+	setData(rune)
 }
 type digit struct {
-	vtc []float32
-	vtq int32
 	rn rune
+	vtq int32
+	vtc []float32
 }
 type letter struct {
-	vtc []float32
-	vtq int32
 	rn rune
+	vtq int32
+	vtc []float32
 }
 type btn struct {
-	Pos [4]float32
+	vtq int32
+	vtc []float32
+	pos [4]float32
 	Text string
 }
 
@@ -55,35 +57,33 @@ func CreateWin() *glfw.Window {
 	vidMode := glfw.GetPrimaryMonitor().GetVideoMode()
 	win.SetPos(vidMode.Width-220, vidMode.Height-1075)
 
-//	win.SetMouseButtonCallback(btnCallback(sw))
-
 	return win
 }
 
-
-/*func btnCallback(sw *StopWatch) func(w *glfw.Window, btn glfw.MouseButton, act glfw.Action, mod glfw.ModifierKey) {
-	return func(w *glfw.Window, btn glfw.MouseButton, act glfw.Action, mod glfw.ModifierKey) {
-		if btn == glfw.MouseButtonLeft && act == glfw.Press {
-			if currBtn := utils.HoverOnBtns(w, utils.Btns); currBtn != nil {
-				switch currBtn.Text {
-				case "TIMER":
-					if !sw.Mode {
-						sw.Mode = true
-						sw.Running = true
-						sw.StartTime = time.Now()
-						sw.SavedTime = 0
-					} else if sw.Mode && sw.Running {
-						sw.Running = false
-						sw.SavedTime += time.Since(sw.StartTime)
-					} else if sw.Mode {
-						sw.Mode = false
+func BtnCallback(sw *StopWatch) func(w *glfw.Window, mBtn glfw.MouseButton, act glfw.Action, mod glfw.ModifierKey) {
+	return func(w *glfw.Window, mBtn glfw.MouseButton, act glfw.Action, mod glfw.ModifierKey) {
+		if mBtn == glfw.MouseButtonLeft && act == glfw.Press {
+			for btn, _ := range sw.btns {
+				if btn.Hover(w, winW, winH) {
+					switch btn.Text {
+					case "STOPW":
+						if !sw.SWmode {
+							sw.SWmode = true
+							sw.Running = true
+							sw.StartTime = time.Now()
+							sw.SavedTime = 0
+						} else if sw.SWmode && sw.Running {
+							sw.Running = false
+							sw.SavedTime += time.Since(sw.StartTime)
+						} else if sw.SWmode {
+							sw.SWmode = false
+						}
+					case "ONTOP":
+						winState := w.GetAttrib(glfw.Floating)
+						w.SetAttrib(glfw.Floating, 1-winState)
 					}
-				case "ONTOP":
-					winState := w.GetAttrib(glfw.Floating)
-					w.SetAttrib(glfw.Floating, 1-winState)
 				}
 			}
 		}
 	}
 }
-*/

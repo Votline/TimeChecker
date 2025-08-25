@@ -80,6 +80,6 @@ func (l *letter) getVtq() int32 {
 	return l.vtq
 }
 
-func (l *letter) setRune(r rune) {
+func (l *letter) setData(r rune) {
 	l.rn = r
 }

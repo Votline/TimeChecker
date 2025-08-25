@@ -1,8 +1,8 @@
 package ui
 
 const (
-	minX = -0.45
-	maxX = -0.35
+	minX = -0.52
+	maxX = -0.42
 
 	scale = 1.0
 
@@ -153,6 +153,6 @@ func (d *digit) getVtq() int32 {
 	return d.vtq
 }
 
-func (d *digit) setRune(r rune) {
+func (d *digit) setData(r rune) {
 	d.rn = r
 }
