@@ -7,9 +7,6 @@ import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
-const winW = 210
-const winH = 90
-
 type element interface {
 	create() element
 	
@@ -35,7 +32,7 @@ type btn struct {
 	Text string
 }
 
-func CreateWin() *glfw.Window {
+func CreateWin(winW, winH, alX, alY int) *glfw.Window {
 	glfw.WindowHint(glfw.RefreshRate, 60)
 	glfw.WindowHint(glfw.Resizable, glfw.False)
 	glfw.WindowHint(glfw.Decorated, glfw.False)
@@ -55,12 +52,12 @@ func CreateWin() *glfw.Window {
 	win.SetAttrib(glfw.Floating, 1)
 	
 	vidMode := glfw.GetPrimaryMonitor().GetVideoMode()
-	win.SetPos(vidMode.Width-220, vidMode.Height-1075)
+	win.SetPos(vidMode.Width-alX, vidMode.Height-alY)
 
 	return win
 }
 
-func BtnCallback(sw *StopWatch) func(w *glfw.Window, mBtn glfw.MouseButton, act glfw.Action, mod glfw.ModifierKey) {
+func BtnCallback(sw *StopWatch, winW, winH int) func(w *glfw.Window, mBtn glfw.MouseButton, act glfw.Action, mod glfw.ModifierKey) {
 	return func(w *glfw.Window, mBtn glfw.MouseButton, act glfw.Action, mod glfw.ModifierKey) {
 		if mBtn == glfw.MouseButtonLeft && act == glfw.Press {
 			for btn, _ := range sw.btns {

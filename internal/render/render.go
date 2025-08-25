@@ -4,10 +4,9 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
-func Setup() (uint32, int32) {
+func Setup(textC, backC []float32) (uint32, int32) {
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-	gl.ClearColor(0.0, 0.0, 0.0, 0.7)
 
 	pg := gl.CreateProgram()
 	shaders := attachShaders(pg)
@@ -16,7 +15,11 @@ func Setup() (uint32, int32) {
 	gl.UseProgram(pg)
 	
 	ofl := gl.GetUniformLocation(pg, gl.Str("xOffset\x00"))
+	ofC := gl.GetUniformLocation(pg, gl.Str("tColor\x00"))
 	detachShaders(pg, shaders)
+
+	gl.ClearColor(backC[0], backC[1], backC[2], backC[3])
+	gl.Uniform4f(ofC, textC[0], textC[1], textC[2], textC[3])
 
 	return pg, ofl
 }

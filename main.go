@@ -7,8 +7,9 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 
-	"TimeCheck/internal/ui"
-	"TimeCheck/internal/render"
+	"TimeChecker/internal/ui"
+	"TimeChecker/internal/render"
+	"TimeChecker/internal/config"
 )
 
 func init() {
@@ -26,10 +27,15 @@ func main() {
 	}
 	log.SetFlags(log.Lshortfile)
 
-	win := ui.CreateWin()
-	pg, ofL := render.Setup()
+	cfg, err := config.Parse()
+	if err != nil {
+		log.Fatalf("Config getting error: %v", err)
+	}
+
+	win := ui.CreateWin(cfg.WinW, cfg.WinH, cfg.AlX, cfg.AlY)
+	pg, ofL := render.Setup(cfg.TextC, cfg.BackC)
 	sw := ui.CreateSW(pg, ofL)
-	win.SetMouseButtonCallback(ui.BtnCallback(sw))
+	win.SetMouseButtonCallback(ui.BtnCallback(sw, cfg.WinW, cfg.WinH))
 
 	glfw.SwapInterval(1)
 	for !win.ShouldClose() {

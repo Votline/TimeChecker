@@ -80,7 +80,7 @@ func (d *digit) create() element {
 	case '7':
 		return &digit{
 			vtc: []float32{
-				minX-0.05, maxY, 0.0,
+				minX-0.03, maxY, 0.0,
 				maxX     , maxY, 0.0,
 				minX     , minY, 0.0},
 			vtq: int32(3)}

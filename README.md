@@ -21,8 +21,8 @@ The application displays current time in a separate window.
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/Votline/TimeCheck
-    cd TimeCheck
+    git clone https://github.com/Votline/TimeChecker
+    cd TimeChecker
     ```
 
 2.  **Download dependencies**:
@@ -32,15 +32,15 @@ The application displays current time in a separate window.
 
 3.  **Build the application**:
     ```bash
-    go build -o timecheck
+    go build -o timechecker
     ```
 
 4.  **Run**:
     ```bash
-    ./timecheck
+    ./timechecker
     ```
 
 ## Licenses
-This project is licensed under [GNU AGPL v3](LICENSE).
+This project is licensed under [MIT](LICENSE).
 
 The full license texts are available in the [licenses directory](licenses/)

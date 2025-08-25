@@ -20,9 +20,10 @@ const fragmentShaderSource = `
 #version 410 core
 
 out vec4 FragColor;
+uniform vec4 tColor;
 
 void main(){
-	FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+	FragColor = tColor;
 }` + "\x00"
 
 func attachShaders(pg uint32) []uint32 {

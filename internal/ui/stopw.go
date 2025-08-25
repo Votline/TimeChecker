@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-gl/glfw/v3.3/glfw"
 
-	"TimeCheck/internal/render"
+	"TimeChecker/internal/render"
 )
 
 type elemMesh struct {
