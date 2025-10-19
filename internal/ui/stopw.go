@@ -16,7 +16,8 @@ type elemMesh struct {
 
 type StopWatch struct {
 	pg uint32
-	ofL int32
+	ofP int32
+	scale int32
 
 	digs []elemMesh
 	btns map[*btn]elemMesh
@@ -53,7 +54,7 @@ func createBtn(positions [][4]float32, texts []string) map[*btn]elemMesh {
 	return result
 }
 
-func CreateSW(pg uint32, ofl int32) *StopWatch {
+func CreateSW(pg uint32, ofP int32, scale int32) *StopWatch {
 	lets := make(map[rune]elemMesh)
 	letsRunes := []rune{'S', 'T', 'O', 'P', 'W', 'N'}
 	tempLets := createElement[letter](letsRunes)
@@ -69,10 +70,11 @@ func CreateSW(pg uint32, ofl int32) *StopWatch {
 	
 	digs := createElement[digit]([]rune{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', ':'})
 	
-	return &StopWatch{pg: pg, ofL: ofl, digs: digs, btns: btns, lets: lets}
+	return &StopWatch{pg: pg, ofP: ofP, scale: scale, digs: digs, btns: btns, lets: lets}
 }
 
 func (sw *StopWatch) Render(win *glfw.Window) {
+	sw.renderDate()
 	sw.renderTime()
 	sw.renderBtns()
 
@@ -81,8 +83,29 @@ func (sw *StopWatch) Render(win *glfw.Window) {
 	}
 }
 
+func (sw *StopWatch) renderDigit(needed string, sc, offset []float32) {
+	for _, ch := range needed {
+		if ch == ':' || ch == '/' {
+			render.ElemRender(sw.pg, sw.ofP, sw.scale,
+				sw.digs[10].vao, sw.digs[10].vtq, sc, offset)
+			render.ElemRender(sw.pg, sw.ofP, sw.scale,
+				sw.digs[11].vao, sw.digs[11].vtq, sc, offset)
+			offset[0] += 0.09
+			continue
+		}
+		dgt := int(ch - '0')
+		render.ElemRender(sw.pg, sw.ofP, sw.scale,
+			sw.digs[dgt].vao, sw.digs[dgt].vtq, sc, offset)
+		offset[0] += 0.15
+	}
+}
+
+func (sw *StopWatch) renderDate() {
+	date := time.Now().Format("02/01")
+	sw.renderDigit(date, []float32{0.5, 0.5}, []float32{-0.05, 0.6})
+}
+
 func (sw *StopWatch) renderTime() {
-	offset := float32(0.0)
 	var neededTime string
 	currTime := time.Now().Format("15:04:05")
 	if sw.SWmode {
@@ -101,39 +124,26 @@ func (sw *StopWatch) renderTime() {
 		neededTime = currTime
 	}
 
-	for _, ch := range neededTime {
-		if ch == ':' {
-			render.ElemRender(sw.pg, sw.ofL,
-				sw.digs[10].vao, sw.digs[10].vtq, offset)
-			render.ElemRender(sw.pg, sw.ofL,
-				sw.digs[11].vao, sw.digs[11].vtq, offset)
-			offset += 0.09
-			continue
-		}
-		dgt := int(ch - '0')
-		render.ElemRender(sw.pg, sw.ofL,
-			sw.digs[dgt].vao, sw.digs[dgt].vtq, offset)
-		offset += 0.15
-	}
+	sw.renderDigit(neededTime, []float32{1.0, 1.0}, []float32{0.0, 0.0})
 }
 
 func (sw *StopWatch) renderBtns() {
 	spaceIdx := int32(0)
-	offset := float32(0.0)
+	offset := []float32{0.0, 0.0}
 	for _, ch := range "STOPW ON TOP" {
 		if ch == ' ' {
-			if spaceIdx > 0 {offset+=0.03} else {offset += 0.15}
+			if spaceIdx > 0 {offset[0]+=0.03} else {offset[0] += 0.15}
 			spaceIdx++
 			continue
 		}
 		if mesh, exists := sw.lets[ch]; exists {
-			render.ElemRender(sw.pg, sw.ofL,
-				mesh.vao, mesh.vtq, offset)
-			offset += 0.15
+			render.ElemRender(sw.pg, sw.ofP, sw.scale,
+				mesh.vao, mesh.vtq, []float32{1.0, 1.0}, offset)
+			offset[0] += 0.15
 		}
 	}
 	for _, v := range sw.btns {
-		render.ElemRender(sw.pg, sw.ofL,
-			v.vao, v.vtq, 0.0)
+		render.ElemRender(sw.pg, sw.ofP, sw.scale,
+			v.vao, v.vtq, []float32{1.0, 1.0}, []float32{0.0, 0.0})
 	}
 }

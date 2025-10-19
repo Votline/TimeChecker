@@ -33,8 +33,8 @@ func main() {
 	}
 
 	win := ui.CreateWin(cfg.WinW, cfg.WinH, cfg.AlX, cfg.AlY)
-	pg, ofL := render.Setup(cfg.TextC, cfg.BackC)
-	sw := ui.CreateSW(pg, ofL)
+	pg, ofP, scale := render.Setup(cfg.TextC, cfg.BackC)
+	sw := ui.CreateSW(pg, ofP, scale)
 	win.SetMouseButtonCallback(ui.BtnCallback(sw, cfg.WinW, cfg.WinH))
 
 	glfw.SwapInterval(1)
